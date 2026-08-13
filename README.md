@@ -1,14 +1,14 @@
 # 🤖 SaaSPro – Intelligent Ticket Triage and Support Automation
 
-Sistema de automação de suporte baseado em Inteligência Artificial, desenvolvido com n8n, OpenAI, Gmail, Trello e Google Sheets.
+Sistema de automação de suporte baseado em Inteligência Artificial desenvolvido com n8n, OpenAI, Gmail, Trello e Google Sheets.
 
-## 🎯Objetivo
+## 🎯 Objetivo
 
-Automatizar o recebimento, classificação e tratamento inicial de tickets de suporte técnico utilizando Inteligência Artificial.
+Automatizar o recebimento, classificação e tratamento inicial de tickets de suporte técnico utilizando Inteligência Artificial, reduzindo o tempo de triagem, padronizando respostas e aumentando a eficiência operacional.
 
 ## 📌 Sobre o Projeto
 
-Este projeto demonstra a construção de um fluxo completo de atendimento automatizado utilizando Inteligência Artificial para triagem de tickets.
+Este projeto demonstra a construção de um fluxo completo de atendimento automatizado com IA para triagem de tickets de suporte.
 
 A solução é capaz de:
 
@@ -19,9 +19,7 @@ A solução é capaz de:
 - Solicitar aprovação humana
 - Registrar e acompanhar tickets no Trello
 
-O objetivo é reduzir o tempo de triagem, padronizar respostas e aumentar a eficiência operacional.
-
-## Funcionalidades
+## ⚙️ Funcionalidades
 
 - Classificação automática de tickets
 - Definição automática de prioridade
@@ -37,7 +35,11 @@ O objetivo é reduzir o tempo de triagem, padronizar respostas e aumentar a efic
 
 # 🏗️ Arquitetura da Solução
 
-![Arquitetura Geral](docs/workflow-overview.png)
+## 🔄 Workflow Completo
+
+![Workflow Completo](docs/workflow-overview.png)
+
+Fluxo principal desenvolvido no n8n para triagem inteligente de tickets utilizando Inteligência Artificial e aprovação humana.
 
 ## 🔍 Visão Geral
 
@@ -45,27 +47,27 @@ O sistema automatiza a triagem inicial de tickets de suporte utilizando Intelig�
 
 ## 🧩 Componentes
 
-### Gmail
+### 📧 Gmail
 
 Recebe solicitações de suporte via e-mail.
 
-### n8n
+### 🔄 n8n
 
 Orquestra todo o fluxo de automação.
 
-### OpenAI
+### 🤖 OpenAI
 
-Classifica o ticket, identifica prioridade, equipe responsável e gera resposta sugerida.
+Classifica o ticket, identifica prioridade, equipe responsável e gera respostas sugeridas.
 
-### Google Sheets
+### 📊 Google Sheets
 
 Base corporativa utilizada para validação de clientes.
 
-### Trello
+### 📋 Trello
 
 Centraliza o gerenciamento operacional dos tickets.
 
-## Fluxo Técnico
+## 🔀 Fluxo Técnico
 
 1. Cliente envia e-mail.
 2. Sistema verifica se o assunto pertence ao suporte.
@@ -81,49 +83,52 @@ Centraliza o gerenciamento operacional dos tickets.
    - Reprova
 8. Sistema:
    - Envia resposta ao cliente
-   - Ou encaminha para análise manual
+   - Ou encaminha para análise manual.
 
 ## 📸 Evidências de Execução
 
-### 🔄 Workflow Completo no n8n
-
-![Workflow n8n](docs/ai-triage-engine.png)
-
 ### 👤 Aprovação Humana
-
-A resposta gerada pela IA é enviada para validação antes do envio ao cliente.
 
 ![Aprovação Humana](docs/human-approval-flow.png)
 
-### 📋 Ticket Resolvido pela IA
+A resposta gerada pela IA é enviada para validação antes do envio ao cliente.
 
-Após aprovação, o ticket é movido automaticamente para a coluna correspondente no Trello.
+O analista recebe:
 
-![Trello Board](docs/trello-board.png)
+- Resumo do ticket
+- Classificação da IA
+- Resposta sugerida
+- Botões de Aprovação e Reprovação
 
-### 📧 E-mail de Aprovação
+### 📧 Dados do Ticket
 
-Mensagem enviada para o analista responsável revisar a resposta sugerida pela IA.
+![Dados do Ticket](docs/gmail-approval-email1.png)
 
-![Email Aprovação](docs/gmail-approval-email1.png)
+Informações consolidadas do chamado analisado pela IA.
 
 ### 🤖 Resposta Gerada pela IA
 
+![Resposta Gerada](docs/gmail-approval-email2.png)
+
 Exemplo de resposta construída automaticamente com base na análise do ticket.
 
-![Resposta IA](docs/gmail-approval-email2.png)
+### ✅ Aprovação para Envio
 
-### ✅ Aprovação para Envio ao Cliente
+![Aprovação](docs/gmail-approval-email3.png)
 
-Fluxo de confirmação antes da resposta final.
+Validação humana obrigatória antes da comunicação com o cliente.
 
-![Aprovação Final](docs/gmail-approval-email3.png)
+### 🚫 Assunto Fora do Escopo
 
-### 🚫 Tratamento de Assuntos Fora do Escopo
+![Fora do Escopo](docs/gmail-rejected-email.png)
 
-Quando a solicitação não corresponde a suporte técnico, o sistema responde com orientação adequada.
+Quando a solicitação não corresponde ao suporte técnico, o sistema envia automaticamente uma resposta orientativa.
 
-![Email Fora do Escopo](docs/gmail-rejected-email.png)
+### 📋 Gestão Operacional no Trello
+
+![Board Trello](docs/trello-board.png)
+
+Todos os tickets são registrados automaticamente no Trello para acompanhamento operacional e priorização.
 
 ## 🚀 Benefícios
 
@@ -133,8 +138,9 @@ Quando a solicitação não corresponde a suporte técnico, o sistema responde c
 - Aprovação humana obrigatória
 - Priorização automática
 - Integração entre múltiplas plataformas
+- Escalabilidade do processo de atendimento
 
-## 🔀 Fluxo
+## 🧠 Fluxo Lógico
 
 ```text
 Novo Ticket
@@ -168,7 +174,7 @@ Cliente   Análise Manual
 
 ## 🛠️ Stack Tecnológica
 
-- n8n (Workflow Automation)
+- n8n
 - OpenAI GPT
 - Gmail API
 - Trello API
@@ -186,17 +192,18 @@ Cliente   Análise Manual
 
 ### 🚨 Ticket Crítico
 
-- Prioridade crítica
+- Priorização crítica
 - Escalonamento automático
 
 ### 🚫 Assunto Fora do Escopo
 
 - Bloqueio pelo guardrail
-- Email orientativo ao usuário
+- E-mail orientativo ao usuário
 
 ### 🔒 LGPD
 
 - Orientação para não envio de dados sensíveis
+- Tratamento preventivo de informações sensíveis
 
 ## 📁 Estrutura do Projeto
 
@@ -215,9 +222,9 @@ saaspro-ai-ticket-triage/
 │   ├── gmail-approval-email2.png
 │   ├── gmail-approval-email3.png
 │   ├── gmail-rejected-email.png
-│   └── Triagem de tickets de IA com aprovação humana.json
-│
-└── docs/workflow/
+│   ├── Triagem de tickets de IA com aprovação humana.json
+│   │
+│   └── workflow/
 ```
 
 ## 👩‍💻 Autor
@@ -226,18 +233,18 @@ saaspro-ai-ticket-triage/
 
 Analista de Dados | Business Intelligence | Automação com IA
 
-Tecnologias e Competências:
+**Tecnologias e Competências**
 
 - Power BI
 - SQL
 - Python
 - n8n
 - OpenAI
-- Automação de Processos
 - ETL
 - Analytics
+- Automação de Processos
 
-💼LinkedIn: https://www.linkedin.com/in/sabrinaleitedesa/
+💼 LinkedIn: https://www.linkedin.com/in/sabrinaleitedesa/
 
 💻 GitHub: https://github.com/sabbrinaa-cloud
 
