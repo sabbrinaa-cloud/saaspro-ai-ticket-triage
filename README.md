@@ -1,12 +1,12 @@
-# SaaSPro – Intelligent Ticket Triage and Support Automation
+# 🤖 SaaSPro – Intelligent Ticket Triage and Support Automation
 
 Sistema de automação de suporte baseado em Inteligência Artificial, desenvolvido com n8n, OpenAI, Gmail, Trello e Google Sheets.
 
-## Objetivo
+## 🎯Objetivo
 
 Automatizar o recebimento, classificação e tratamento inicial de tickets de suporte técnico utilizando Inteligência Artificial.
 
-## Sobre o Projeto
+## 📌 Sobre o Projeto
 
 Este projeto demonstra a construção de um fluxo completo de atendimento automatizado utilizando Inteligência Artificial para triagem de tickets.
 
@@ -35,13 +35,15 @@ O objetivo é reduzir o tempo de triagem, padronizar respostas e aumentar a efic
 - Tratamento de assuntos fora do escopo
 - Orientação LGPD para conteúdos sensíveis
 
-## Arquitetura da Solução
+# 🏗️ Arquitetura da Solução
 
-## Visão Geral
+![Arquitetura Geral](docs/workflow-overview.png)
+
+## 🔍 Visão Geral
 
 O sistema automatiza a triagem inicial de tickets de suporte utilizando Inteligência Artificial, validação de clientes e aprovação humana antes do envio ao usuário.
 
-## Componentes
+## 🧩 Componentes
 
 ### Gmail
 
@@ -63,7 +65,7 @@ Base corporativa utilizada para validação de clientes.
 
 Centraliza o gerenciamento operacional dos tickets.
 
-## Fluxo operacional
+## Fluxo Técnico
 
 1. Cliente envia e-mail.
 2. Sistema verifica se o assunto pertence ao suporte.
@@ -81,7 +83,49 @@ Centraliza o gerenciamento operacional dos tickets.
    - Envia resposta ao cliente
    - Ou encaminha para análise manual
 
-## Benefícios
+## 📸 Evidências de Execução
+
+### 🔄 Workflow Completo no n8n
+
+![Workflow n8n](docs/ai-triage-engine.png)
+
+### 👤 Aprovação Humana
+
+A resposta gerada pela IA é enviada para validação antes do envio ao cliente.
+
+![Aprovação Humana](docs/human-approval-flow.png)
+
+### 📋 Ticket Resolvido pela IA
+
+Após aprovação, o ticket é movido automaticamente para a coluna correspondente no Trello.
+
+![Trello Board](docs/trello-board.png)
+
+### 📧 E-mail de Aprovação
+
+Mensagem enviada para o analista responsável revisar a resposta sugerida pela IA.
+
+![Email Aprovação](docs/gmail-approval-email1.png)
+
+### 🤖 Resposta Gerada pela IA
+
+Exemplo de resposta construída automaticamente com base na análise do ticket.
+
+![Resposta IA](docs/gmail-approval-email2.png)
+
+### ✅ Aprovação para Envio ao Cliente
+
+Fluxo de confirmação antes da resposta final.
+
+![Aprovação Final](docs/gmail-approval-email3.png)
+
+### 🚫 Tratamento de Assuntos Fora do Escopo
+
+Quando a solicitação não corresponde a suporte técnico, o sistema responde com orientação adequada.
+
+![Email Fora do Escopo](docs/gmail-rejected-email.png)
+
+## 🚀 Benefícios
 
 - Redução do tempo de triagem
 - Padronização das respostas
@@ -90,7 +134,7 @@ Centraliza o gerenciamento operacional dos tickets.
 - Priorização automática
 - Integração entre múltiplas plataformas
 
-## Fluxo 
+## 🔀 Fluxo
 
 ```text
 Novo Ticket
@@ -122,61 +166,67 @@ Aprovar   Reprovar
 Cliente   Análise Manual
 ```
 
-## Stack Tecnológica
+## 🛠️ Stack Tecnológica
 
 - n8n (Workflow Automation)
-- OpenAI GPT (Inteligência Artificial)
-- Gmail API (Comunicação)
-- Trello API (Gestão de Tickets)
-- Google Sheets (Base de Clientes)
-- HTML (Templates de E-mail)
-- JSON (Estrutura de Dados)
+- OpenAI GPT
+- Gmail API
+- Trello API
+- Google Sheets
+- HTML
+- JSON
 
-## Cenários Testados
+## 🧪 Cenários Testados
 
-### Ticket Técnico
+### 🎫 Ticket Técnico
 
-- Classificação correta da solicitação
-- Identificação da equipe responsável
-- Geração automática de resposta
-- Aprovação humana antes do envio
+- Classificação correta
+- Resposta automática
+- Aprovação humana
 
-### Ticket Crítico
+### 🚨 Ticket Crítico
 
-- Classificação como prioridade crítica
-- Aplicação automática da etiqueta correspondente
-- Escalonamento para equipe responsável
+- Prioridade crítica
+- Escalonamento automático
 
-### Assunto Fora do Escopo
+### 🚫 Assunto Fora do Escopo
 
-- Bloqueio pelo guardrail de validação
-- Não encaminhamento para a IA
-- Envio de e-mail orientativo ao usuário
+- Bloqueio pelo guardrail
+- Email orientativo ao usuário
 
-### LGPD
+### 🔒 LGPD
 
-- Identificação de solicitação inadequada
-- Orientação para não compartilhamento de dados sensíveis
-- Preservação das boas práticas de segurança da informação
+- Orientação para não envio de dados sensíveis
 
-## Resultados
+## 📁 Estrutura do Projeto
 
-A solução demonstrou a capacidade de:
+```text
+saaspro-ai-ticket-triage/
+│
+├── README.md
+├── LICENSE
+│
+├── docs/
+│   ├── workflow-overview.png
+│   ├── ai-triage-engine.png
+│   ├── human-approval-flow.png
+│   ├── trello-board.png
+│   ├── gmail-approval-email1.png
+│   ├── gmail-approval-email2.png
+│   ├── gmail-approval-email3.png
+│   ├── gmail-rejected-email.png
+│   └── Triagem de tickets de IA com aprovação humana.json
+│
+└── docs/workflow/
+```
 
-- Automatizar a triagem inicial de tickets
-- Reduzir atividades manuais repetitivas
-- Padronizar respostas ao cliente
-- Aplicar critérios de priorização automaticamente
-- Integrar múltiplas plataformas em um único fluxo
-- Manter supervisão humana em decisões críticas
-
-## Autor
+## 👩‍💻 Autor
 
 **Sabrina Leite de Sá**
 
 Analista de Dados | Business Intelligence | Automação com IA
 
-**Competências:**
+Tecnologias e Competências:
 
 - Power BI
 - SQL
@@ -184,3 +234,11 @@ Analista de Dados | Business Intelligence | Automação com IA
 - n8n
 - OpenAI
 - Automação de Processos
+- ETL
+- Analytics
+
+💼LinkedIn: https://www.linkedin.com/in/sabrinaleitedesa/
+
+💻 GitHub: https://github.com/sabbrinaa-cloud
+
+🌐 Portfólio: https://sites.google.com/edu.senai.br/portfolio-sabrina-sa/in%C3%ADcio
