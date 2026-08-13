@@ -1,0 +1,602 @@
+{
+  "name": "Triagem de tickets de IA com aprovação humana",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Abertura de Ticket - Suporte",
+        "formDescription": "Preencha os campos abaixo para enviar uma solicitação. Nossa equipe respondera em breve",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome",
+              "fieldName": "Nome",
+              "placeholder": "Joao Martins",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "fieldName": "Email",
+              "placeholder": "joaomartins@gmail.com",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Empresa",
+              "fieldName": "Empresa",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Assunto",
+              "fieldName": "Assunto",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Descreva o problema que voce esta enfrentando",
+              "fieldType": "textarea",
+              "fieldName": "Mensagem",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Enviar",
+          "respondWithOptions": {
+            "values": {
+              "formSubmittedText": "Seu ticket foi enviado com sucesso"
+            }
+          },
+          "customCss": ":root {\n\t--font-family: 'Open Sans', sans-serif;\n\t--font-weight-normal: 400;\n\t--font-weight-bold: 600;\n\t--font-size-body: 12px;\n\t--font-size-label: 14px;\n\t--font-size-test-notice: 12px;\n\t--font-size-input: 14px;\n\t--font-size-header: 20px;\n\t--font-size-paragraph: 14px;\n\t--font-size-link: 12px;\n\t--font-size-error: 12px;\n\t--font-size-html-h1: 28px;\n\t--font-size-html-h2: 20px;\n\t--font-size-html-h3: 16px;\n\t--font-size-html-h4: 14px;\n\t--font-size-html-h5: 12px;\n\t--font-size-html-h6: 10px;\n\t--font-size-subheader: 14px;\n\n\t/* Colors */\n\t--color-background: #fbfcfe;\n\t--color-test-notice-text: #e6a23d;\n\t--color-test-notice-bg: #fefaf6;\n\t--color-test-notice-border: #f6dcb7;\n\t--color-card-bg: #ffffff;\n\t--color-card-border: #dbdfe7;\n\t--color-card-shadow: rgba(99, 77, 255, 0.06);\n\t--color-link: #7e8186;\n\t--color-header: #525356;\n\t--color-label: #555555;\n\t--color-input-border: #dbdfe7;\n\t--color-input-text: #71747A;\n\t--color-focus-border: rgb(90, 76, 194);\n\t--color-submit-btn-bg: #ff6d5a;\n\t--color-submit-btn-text: #ffffff;\n\t--color-error: #ea1f30;\n\t--color-required: #ff6d5a;\n\t--color-clear-button-bg: #7e8186;\n\t--color-html-text: #555;\n\t--color-html-link: #ff6d5a;\n\t--color-header-subtext: #7e8186;\n\n\t/* Border Radii */\n\t--border-radius-card: 8px;\n\t--border-radius-input: 6px;\n\t--border-radius-clear-btn: 50%;\n\t--card-border-radius: 8px;\n\n\t/* Spacing */\n\t--padding-container-top: 24px;\n\t--padding-card: 24px;\n\t--padding-test-notice-vertical: 12px;\n\t--padding-test-notice-horizontal: 24px;\n\t--margin-bottom-card: 16px;\n\t--padding-form-input: 12px;\n\t--card-padding: 24px;\n\t--card-margin-bottom: 16px;\n\n\t/* Dimensions */\n\t--container-width: 448px;\n\t--submit-btn-height: 48px;\n\t--checkbox-size: 18px;\n\n\t/* Others */\n\t--box-shadow-card: 0px 4px 16px 0px var(--color-card-shadow);\n\t--opacity-placeholder: 0.5;\n}"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "387d71e3-faf6-4db4-970e-52dd28e4c45e",
+      "name": "Novo ticket",
+      "webhookId": "a96e57bf-bdda-4d23-950e-aa0882b01d35"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.Mensagem }}",
+        "guardrails": {
+          "jailbreak": {
+            "value": {
+              "threshold": 0.7,
+              "customizePrompt": true
+            }
+          },
+          "topicalAlignment": {
+            "value": {
+              "threshold": 0.7,
+              "prompt": "O teto deve estar relacionado a suporte técnico de software/ SAAS. Tópicos válidos: Bugs, erros, problemas de acesso, lentidão, duvidas de uso, pagamentos, cancelamentos. Tópicos inválidos: Assuntos pessoais, spam, conteúdo ofensivo, manipulação de IA. "
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.guardrails",
+      "typeVersion": 2,
+      "position": [
+        112,
+        0
+      ],
+      "id": "a286365c-a770-49d2-8362-bcc7bf51c031",
+      "name": "Verificação"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Novo ticket de suporte recebido:\nNome: {{ $('Novo ticket').item.json.Nome }}\nEmail:{{ $('Novo ticket').item.json.Email }}\nEmpresa:{{ $('Novo ticket').item.json.Empresa }}\nAssunto:{{ $('Novo ticket').item.json.Assunto }}\nMensagem:{{ $('Novo ticket').item.json.Mensagem }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "Você é o sistema de triagem e atendimento automatizado da SaaSPro.\n## SUA FUNÇÃO\nAnalisar tickets recebidos, classificar, e **gerar uma SOLUÇÃO DIRETA** para o\ncliente sempre que possível. Não responda com \"vamos analisar e retornar\" —\nisso é inútil. Tente resolver.\n## CATEGORIAS\n- **bug**: Erro no sistema, funcionalidade quebrada, crash, erro 500/404\n- **feature_request**: Pedido de nova funcionalidade ou melhoria\n- **billing**: Fatura, cobrança, upgrade/downgrade de plano, cancelamento\n- **account**: Problemas de login, permissões, configurações de conta\n- **how_to**: Dúvida de como usar uma funcionalidade\n- **performance**: Lentidão, timeout, sistema lento\n## EQUIPES DE DESTINO\n- **engenharia**: bug, performance\n- **produto**: feature_request\n- **financeiro**: billing\n- **customer_success**: account, how_to\n## PRIORIDADES\n- **critica**: Sistema fora do ar, perda de dados, afeta todos os usuários\n- **alta**: Funcionalidade importante quebrada, afeta operação do cliente\n- **media**: Bug menor, dúvida operacional\n- **baixa**: Sugestão, elogio, dúvida simples\n## COMO GERAR A RESPOSTA AO CLIENTE\n1. Cumprimente o cliente pelo nome\n2. Identifique o problema descrito\n3. **PROPONHA UMA SOLUÇÃO CONCRETA** com passos claros. Exemplos:\n - \"Câmera não conecta\": verificar drivers, testar em outro aplicativo,\nreiniciar serviço USB, atualizar firmware\n- \"Erro 500 em relatórios\": limpar cache, verificar permissões, testar em\nmodo anônimo\n - \"Login não funciona\": resetar senha, verificar 2FA, limpar cookies\n4. Se for dúvida de uso: explique como usar a funcionalidade passo a passo\n5. Se for billing: explique políticas e oriente a próxima ação\n6. Termine dizendo \"Se a solução acima não resolver, nossa equipe {equipe}\nassumirá o caso\"\n## QUANDO ENCAMINHAR SEM TENTAR RESOLVER\n- Problema crítico (sistema fora do ar): apenas confirme recebimento urgente\n- Caso muito específico que exige investigação interna\n- Feature requests (não tem solução, só registrar)\n## INSTRUÇÕES OPERACIONAIS\n1. Use \"ConsultarBase\" para verificar o plano do cliente\n2. Clientes Enterprise/Corporate: eleve prioridade em 1 nível\n3. Menções a \"urgente\", \"produção\", \"todos usuários\": prioridade mínima = alta\n4. Inclua protocolo TK-{data}-{número} no final da resposta\n5. Nunca invente dados do cliente nem features que não existem\n## FORMATO DA RESPOSTA (resposta_cliente_html)\nUse HTML simples e estruturado:\n- `<p>` para parágrafos\n- `<b>` para negritos\n- `<ol>` e `<li>` para passos numerados\n- `<br>` para quebras de linha dentro de parágrafos\n- NUNCA use \\n (só HTML)\nExemplo:\n<p>Olá Henrique,</p>\n<p>Identifiquei que você está com problema de conexão na câmera.</p>\n<p><b>Tente os seguintes passos:</b></p>\n<ol>\n <li>Verifique se o driver da câmera está atualizado</li>\n <li>Teste a câmera em outro aplicativo</li>\n <li>Reinicie o serviço USB do Windows</li>\n</ol>\n<p>Se após tentar os passos acima o problema persistir, nossa equipe de\nengenharia vai assumir o caso.</p>\n<p>Atenciosamente,<br>Equipe SaaSPro<br>Protocolo: TK-20260420-001</p>\n## REGRAS GERAIS\n- SEMPRE em português brasileiro\n- Tom empático, profissional e objetivo\n- NUNCA invente dados do cliente\n- NUNCA prometa prazos específicos (\"em 24h\") a menos que seja política conhecida\n- SEMPRE retorne HTML estruturado (nunca markdown nem texto puro)\n\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        432,
+        -128
+      ],
+      "id": "8fb7fa23-0e0f-4081-87e1-bd627bf4b485",
+      "name": "Agente Triagem"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"categoria\": \"bug\",\n  \"prioridade\": \"alta\",\n  \"equipe\": \"engenharia\",\n  \"resumo\": \"Câmera não conecta no Nvidia Broadcast\",\n  \"impacto\": \"Cliente sem conseguir usar câmera\",\n  \"tem_solucao\": true,\n  \"resposta_cliente_html\": \"<p>Olá Henrique,</p> <p>Identifiquei que sua câmera não está conectando...</p><ol><li>Atualize o driver da câmera</li><li>Teste em outro aplicativo</li></ol>\",\n  \"cliente_existente\": true,\n  \"plano_cliente\": \"Enterprise\"\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        704,
+        64
+      ],
+      "id": "4b9f9a08-9a74-4122-97cc-a4cefb0342e7",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        112,
+        192
+      ],
+      "id": "16d59b15-e958-4e2e-8229-979f3f654e21",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1S9KDUIJOXYEBEft",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        432,
+        64
+      ],
+      "id": "9d42b510-5b17-4703-91a9-9e2715f7f542",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "1S9KDUIJOXYEBEft",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "=https://docs.google.com/spreadsheets/d/1vdW8dGHbHKFbxV751EZbUwiZK4x6BMMRsONgdLFw0tk/edit?gid=1892117280#gid=1892117280",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "name",
+          "value": "Clientes"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "email",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "combineFilters": "=AND",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        560,
+        64
+      ],
+      "id": "1cdee314-6dd8-42d2-95f4-8edcd98a36a0",
+      "name": "ConsultarBase",
+      "credentials": {
+        "googleApi": {
+          "id": "RqBSyGf0XthXnMvk",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "list",
+        "operation": "getAll",
+        "id": "g1qALXOY",
+        "returnAll": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -304
+      ],
+      "id": "b673dea0-3089-458a-8ea9-7932e3b0ccd5",
+      "name": "BuscarListas",
+      "credentials": {
+        "trelloApi": {
+          "id": "4O5FyCoX2ckZKMjH",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "listId": "6a7ca02b9f2522efcde2a7b3",
+        "name": "={{ $json.output.resumo }}",
+        "description": "=Cliente:{{ $('Novo ticket').item.json.Nome }}\nPlano: {{ $json.output.plano_cliente }}\nCategoria:{{ $json.output.categoria }}\nEquipe:{{ $json.output.equipe }}\nImpacto: {{ $json.output.impacto }}",
+        "additionalFields": {
+          "idLabels": "={{\n($json.output.prioridade || \"\").toLowerCase() === \"critica\"\n? \"6a7c9fb3733c508470fdd0ee\"\n\n: ($json.output.prioridade || \"\").toLowerCase() === \"alta\"\n? \"6a7c9fb3733c508470fdd0ed\"\n\n: ($json.output.prioridade || \"\").toLowerCase() === \"media\"\n? \"6a7c9fb3733c508470fdd0ec\"\n\n: \"6a7c9fb3733c508470fdd0eb\"\n}}"
+        }
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        848,
+        -240
+      ],
+      "id": "7d0ee462-5805-4cc4-ae67-123a8284f886",
+      "name": "Create a card",
+      "credentials": {
+        "trelloApi": {
+          "id": "4O5FyCoX2ckZKMjH",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "boardId": {
+          "__rl": true,
+          "value": "g1qALXOY",
+          "mode": "id"
+        },
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -304
+      ],
+      "id": "c128b031-6430-49a9-89fd-57c120a9a8cc",
+      "name": "BuscarEtiquetas",
+      "credentials": {
+        "trelloApi": {
+          "id": "4O5FyCoX2ckZKMjH",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "sabbrinaa@gmail.com",
+        "subject": "={Aprovação Necessaria} - Ticket  {{ $('Agente Triagem').item.json.output.prioridade.toUpperCase()}} - {{ $('Agente Triagem').item.json.output.resumo }}",
+        "message": "=<div style=\"font-family: Arial, sans-serif; color: #1f2937; line-height: 1.5; max-width: 720px;\">\n  <h2 style=\"margin-bottom: 8px; color: #111827;\">Aprovação de resposta da IA</h2>\n  <p style=\"margin-top: 0; color: #4b5563;\">Um novo ticket foi analisado pela inteligência artificial e precisa de aprovação antes do envio ao cliente.</p>\n  <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n  \n  <h3 style=\"color: #111827; margin-bottom: 10px;\">Dados do cliente</h3>\n  <p>\n    <b>Nome:</b> {{ $('Novo ticket').item.json.Nome }}<br>\n    <b>Email:</b> {{ $('Novo ticket').item.json.Email }}<br>\n   <b>Plano do Cliente:</b> {{ $('Novo ticket').item.json.Empresa }}\n  \n  <h3 style=\"color: #111827; margin-bottom: 10px;\">Detalhes do ticket</h3>\n  <p>\n    <b>Categoria:</b> {{ $('Agente Triagem').item.json.output.categoria }}<br>\n    <b>Prioridade:</b> {{ $('Agente Triagem').item.json.output.prioridade }}<br>\n    <b>Equipe responsável:</b> {{ $('Agente Triagem').item.json.output.equipe }}\n  </p>\n  <p>\n    <b>Impacto identificado:</b><br>\n    {{ $('Agente Triagem').item.json.output.impacto }}\n  </p>\n  <p>\n    <b>Resumo gerado pela IA:</b><br>\n    {{ $('Agente Triagem').item.json.output.resumo }}\n  </p>\n  \n  <div style=\"background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 20px 0;\">\n    <h3 style=\"margin-top: 0; color: #111827;\">Mensagem original do cliente</h3>\n    <p style=\"margin-bottom: 0;\">{{ $('Agente Triagem').item.json.output.resumo }}</p>\n  </div>\n  \n  <div style=\"background: #ecfdf5; border: 1px solid #bbf7d0; border-radius: 8px; padding: 16px; margin: 20px 0;\">\n    <h3 style=\"margin-top: 0; color: #065f46;\">Resposta sugerida pela IA</h3>\n    {{ $('Agente Triagem').item.json.output.resposta_cliente_html }}\n  </div>\n  \n  <hr style=\"border: none; border-top: 1px solid #e5e7eb; margin: 20px 0;\">\n  <p style=\"color: #4b5563;\">Revise a resposta acima e escolha uma das opções abaixo no seu e-mail:</p>\n</div>\n\n",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Aprovar (Enviar Resposta)",
+            "disapproveLabel": "Reprovar (Responder Manualmente)"
+          }
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1056,
+        -240
+      ],
+      "id": "8768ce13-9e47-4608-a62e-c021491bb234",
+      "name": "NotificarEquipe",
+      "webhookId": "8d6db6cd-d729-44dd-a043-0c41396f9f23",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "n72xr8dw9MplxkiM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c0d9241d-8674-49e4-ac76-f3dce3edf59b",
+              "leftValue": "={{ $json.data.approved }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        -240
+      ],
+      "id": "3459c791-6532-4084-b6d7-38510b34ab17",
+      "name": "Aprovado"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Novo ticket').item.json.Email }}",
+        "subject": "=RE: {{ $('Novo ticket').item.json.Assunto }}",
+        "message": "={{ $('Agente Triagem').item.json.output.resposta_cliente_html }}",
+        "options": {
+          "appendAttribution": false,
+          "senderName": "SaasPro - Suporte"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1472,
+        -336
+      ],
+      "id": "32b4b65c-f693-4518-80fb-728caa888866",
+      "name": "EnviarResposta",
+      "webhookId": "18954458-b6c5-4a2b-a5e8-2427ec353856",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "n72xr8dw9MplxkiM",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "id": {
+          "__rl": true,
+          "value": "={{ $('Create a card').item.json.id }}",
+          "mode": "id"
+        },
+        "updateFields": {
+          "idList": "6a7ca04ceda3136cd7b69f02"
+        }
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        -336
+      ],
+      "id": "b560551d-4193-4ac3-b63f-c4914a9494d9",
+      "name": "MoverCard",
+      "credentials": {
+        "trelloApi": {
+          "id": "4O5FyCoX2ckZKMjH",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "id": {
+          "__rl": true,
+          "value": "={{ $('Create a card').item.json.id }}",
+          "mode": "id"
+        },
+        "updateFields": {
+          "idList": "6a7ca05949955eef7522fc96"
+        }
+      },
+      "type": "n8n-nodes-base.trello",
+      "typeVersion": 1,
+      "position": [
+        1488,
+        -80
+      ],
+      "id": "aa23048a-279d-41d3-8a7c-6c078489ed15",
+      "name": "MoverCard1",
+      "credentials": {
+        "trelloApi": {
+          "id": "4O5FyCoX2ckZKMjH",
+          "name": "Trello account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Novo ticket').item.json.Email }}",
+        "subject": "Solicitação recebida - ação necessária",
+        "message": "=<div style=\"font-family: Arial, sans-serif; max-width: 700px; color: #333; line-height: 1.6;\">\n\n  <h2 style=\"color:#1f2937;\">\n    Solicitação recebida\n  </h2>\n\n  <p>\n    Olá <b>{{ $('Novo ticket').item.json.Nome }}</b>,\n  </p>\n\n  <p>\n    Recebemos sua solicitação referente ao assunto:\n    <b>{{ $('Novo ticket').item.json.Assunto }}</b>.\n  </p>\n\n  <p>\n    No momento não foi possível processar automaticamente sua solicitação.\n  </p>\n\n  <p>\n    Este canal é destinado exclusivamente ao suporte técnico da plataforma SaaSPro.\n  </p>\n\n  <p>\n    Caso sua solicitação esteja relacionada a problemas de acesso, erros do sistema,\n    dúvidas de utilização, lentidão, cobranças, funcionalidades ou outras questões\n    técnicas da plataforma, envie uma nova mensagem com mais detalhes sobre o\n    problema encontrado.\n  </p>\n\n  <p>\n    Por questões de segurança e privacidade, recomendamos não compartilhar dados\n    pessoais ou sensíveis por este canal, tais como:\n  </p>\n\n  <ul>\n    <li>CPF</li>\n    <li>RG</li>\n    <li>CNH</li>\n    <li>Dados bancários</li>\n    <li>Números de cartão</li>\n    <li>Senhas</li>\n    <li>Informações pessoais sensíveis</li>\n  </ul>\n\n  <div style=\"background:#f9fafb;border:1px solid #e5e7eb;padding:12px;border-radius:6px;margin-top:20px;\">\n    <b>Mensagem recebida:</b><br><br>\n    {{ $('Novo ticket').item.json.Mensagem }}\n  </div>\n\n  <div style=\"background:#fff7ed;border:1px solid #fdba74;padding:12px;border-radius:6px;margin-top:20px;\">\n    <b>Validação acionada:</b><br>\n\n    {{\n      $('Verificação').item.json.checks?.checks?.[0]?.name ||\n      $('Verificação').item.json.checks?.[0]?.name ||\n      'Conteúdo fora dos critérios de atendimento'\n    }}\n  </div>\n\n  <p style=\"margin-top:20px;\">\n    Se necessário, envie uma nova solicitação contendo apenas informações\n    relacionadas ao suporte técnico da plataforma.\n  </p>\n\n  <hr style=\"margin-top:30px; border:none; border-top:1px solid #e5e7eb;\">\n\n  <p style=\"font-size:12px;color:#6b7280;\">\n    Esta é uma mensagem automática gerada pelo sistema de triagem da SaaSPro.\n  </p>\n\n  <p>\n    Atenciosamente,<br>\n    <b>Equipe SaaSPro</b>\n  </p>\n\n</div>\n",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        272
+      ],
+      "id": "f4131363-a526-4807-8128-5c9adbb0c35b",
+      "name": "Send a message",
+      "webhookId": "951e4f38-de75-44c9-873a-0f5f190892a0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "n72xr8dw9MplxkiM",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Novo ticket": {
+      "main": [
+        [
+          {
+            "node": "Verificação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verificação": {
+      "main": [
+        [
+          {
+            "node": "Agente Triagem",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Agente Triagem",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Verificação",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agente Triagem",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ConsultarBase": {
+      "ai_tool": [
+        [
+          {
+            "node": "Agente Triagem",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agente Triagem": {
+      "main": [
+        [
+          {
+            "node": "Create a card",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a card": {
+      "main": [
+        [
+          {
+            "node": "NotificarEquipe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "NotificarEquipe": {
+      "main": [
+        [
+          {
+            "node": "Aprovado",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aprovado": {
+      "main": [
+        [
+          {
+            "node": "EnviarResposta",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "MoverCard1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "EnviarResposta": {
+      "main": [
+        [
+          {
+            "node": "MoverCard",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "52f20086-db26-4263-8e88-cbceb3f31f8c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e30570fd83f24a8419a4896e98e2302ca8dff0dc184e0c456aec08dbf4073f47"
+  },
+  "id": "16Z1EgHCCJsfKil3",
+  "tags": []
+}
